@@ -17,10 +17,6 @@ service = UserService
 
 
 
-
-
-
-
 """/api/drive/:id"""
 class UserResource(Resource):
     

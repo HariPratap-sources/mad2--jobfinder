@@ -195,17 +195,20 @@ export default {
 
         async deleteDrive(id) {
 
-            await fetch(`http://127.0.0.1:5000/api/drive/${id}`, {
+            const res = await fetch(`http://127.0.0.1:5000/api/drive/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authentication-Token": localStorage.getItem("access_token")
                 }
-            })
-            const data = await res.json()
-            alert(data.message)
+            });
 
-            this.fetchCompanyDashboard()
-
+            const data = await res.json();
+            if (res.ok) {
+                alert(data.message)
+                this.$.fetchCompanyDashboard();
+            } else {
+                alert(data.message || "Failed to delete drive");
+            }
         }
 
     }

@@ -39,7 +39,7 @@
 
                 <div class="col">
                     <label class="form-label">Application Deadline</label>
-                    <input v-model="drive.application_deadline" type="date" class="form-control">
+                    <input v-model="drive.application_deadline" type="date" class="form-control" :min="today">
                 </div>
 
                 <div class="col">
@@ -84,6 +84,7 @@ export default {
                 salary: "",
                 application_deadline: ""
             },
+            today: new Date().toISOString().split("T")[0],
 
             error: null
 

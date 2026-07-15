@@ -140,7 +140,7 @@ export default {
             M_no: "",
             Skill: "",
             Work_status: "",
-            Resume: null,
+            resume: null,
             error: "",
             loading: false,
             userStore: null,
@@ -151,31 +151,36 @@ export default {
         this.userStore = useUserStore();
     },
     methods: {
-        // handleFile(event) {
-        //     this.resume = event.target.files[0];
-        // },
+        handleFile(event) {
+            this.resume = event.target.files[0];
+        },
+        
         async registerUser() {
             this.error = "",
 
                 this.loading = true;
             try {
                 // Build payload according to selected role
-                const payload = {
-                    email: this.Email,
-                    password: this.Password,
-                    role: this.role,
-                    full_name: this.Fname,
-                    age: this.Age,
-                    gender: this.Gender,
-                    qualification: this.Edu,
-                    department: this.Depart,
-                    college_name: this.College_name,
-                    mobile_no: this.M_no,
-                    skill: this.Skill,
-                    experience: this.Work_status,
-                    resume: this.resume
-                };
-                const res = await api.post("/auth/register", payload);
+                const formData = new FormData();
+                formData.append("email", this.Email);
+                formData.append("password", this.Password);
+                formData.append("role", this.role);
+                formData.append("full_name", this.Fname);
+                formData.append("age", this.Age);
+                formData.append("gender", this.Gender);
+                formData.append("qualification", this.Edu);
+                formData.append("department", this.Depart);
+                formData.append("college_name", this.College_name);
+                formData.append("mobile_no", this.M_no);
+                formData.append("skill", this.Skill);
+                formData.append("experience", this.Work_status);
+                
+
+                if (this.resume) {
+                    formData.append("resume", this.resume);
+                }
+    
+                await api.post("/auth/register", formData);
                 // redirect to login
                 alert("Signup successfull! Please login");
                 this.$router.push("/")

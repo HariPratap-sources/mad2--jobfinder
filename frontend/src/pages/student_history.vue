@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import api from "@/utils/api";
+// import api from "@/utils/api";
 
 export default {
     name: "StudentHistory",

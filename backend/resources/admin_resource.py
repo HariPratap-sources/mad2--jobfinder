@@ -6,6 +6,7 @@ from services import ApplicationService, RequestService
 from flask_restful import marshal
 from resources.marshal_fields import user_fields, drive_fields, company_fields, application_fields, student_fields, request_fields
 from flask_security.decorators import roles_required 
+from extensions import cache
 
 
 class AdminDashboardResource(Resource):
@@ -40,11 +41,12 @@ class AdminSearchResource(Resource):
     @roles_required("admin")
     def get(self):
         query = request.args.get("q", "").strip()
+        search_type = request.args.get("type", "")
 
         if not query:
-            return [], 200
+            return {"students": [], "companies": []}, 200
 
-        results = UserService.search_users(query)
+        results = UserService.search_users(query, search_type)
 
         return results, 200
 
@@ -88,7 +90,7 @@ def student_block(id):
 def approve_request(id):
 
     request = RequestService.approve_request(id)
-
+    cache.clear()
     return marshal(request, request_fields), 200
 
 

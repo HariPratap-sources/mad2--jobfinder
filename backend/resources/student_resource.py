@@ -13,6 +13,7 @@ from flask_security import current_user
 from flask import send_from_directory
 from tasks.export import export_applications
 from flask import send_file
+from extensions import cache
 
 
 parser = reqparse.RequestParser()
@@ -114,6 +115,8 @@ class StudentDashboardListResource(Resource):
 
 class StudentCompanyResource(Resource): 
     @roles_required("student")
+    
+    @cache.cached(timeout=120)
     def get(self, id):
 
         company = UserService.get_company_by_id(id)

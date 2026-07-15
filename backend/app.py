@@ -22,6 +22,7 @@ def create_app():
     app.config["result_backend"] = "redis://localhost:6379/0"
     app.config["CACHE_TYPE"] = "RedisCache"
     app.config["CACHE_REDIS_URL"] = "redis://localhost:6379/1"
+    app.config["CACHE_DEFAULT_TIMEOUT"] = 60
     app.config["CELERY_TIMEZONE"] = "Asia/Kolkata"
     app.config["CELERY_ENABLE_UTC"] = False
     #Init cache here

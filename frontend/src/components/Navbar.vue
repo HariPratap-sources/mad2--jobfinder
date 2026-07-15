@@ -149,6 +149,7 @@ export default {
     },
 
     handleLogout() {
+      console.log("Logout clicked");
       if (this.userStore) {
         this.userStore.logout();
       }

@@ -122,6 +122,7 @@ class PlacementDriveResource(Resource):
     
 """/api/drive -> get, post"""
 class PlacementDriveListResource(Resource):
+    @cache.cached(timeout=120)
     def get(self):
         drive = service.get_all()
 

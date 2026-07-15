@@ -62,10 +62,18 @@ def login():
     return jsonify({"id": user.id, "email": user.email, "role" : role, "token": user.get_auth_token()}), 200
 
 
- 
+
 @auth_bp.route("/register", methods = ["GET", "POST"])
 def register():
-    data = request.get_json()
+    print("FORM:", request.form)
+    print("FILES:", request.files)
+
+    data = request.form
+
+    print("Email:", data.get("email"))
+    print("Password:", data.get("password"))
+    print("Role:", data.get("role"))
+    # data = request.form
 
     file = request.files.get("resume")
 
@@ -97,9 +105,10 @@ def register():
             resume_path = None
             if file and file.filename != "":
                 filename = secure_filename(file.filename)
-                filepath = os.path.join("uploads/resume", filename)
+                unique_name = f"{user.id}_{filename}"
+                filepath = os.path.join("uploads/resumes", unique_name)
                 file.save(filepath)
-                resume_path = filepath
+                resume_path = unique_name
             new_student = Student_Profile(user_id=user.id, fullname=data.get("full_name"), age=data.get("age"), gender=data.get("gender"), qualification=data.get("qualification"), department=data.get("department"), college_name=data.get("college_name"), contact_no=data.get("mobile_no"), skill=data.get("skill"), experience=data.get("experience"), resume = resume_path)
             db.session.add(new_student)
 

@@ -16,7 +16,7 @@ class UserService():
         return Company_Profile.query.all()
     
     @staticmethod
-   
+    @cache.cached(timeout=120)
     def get_approve_companies(status):
         return Company_Profile.query.filter_by(approval_status = status).all()
     
@@ -134,37 +134,51 @@ class UserService():
 
 
     @staticmethod
-    def search_users(query):
+    def search_users(query, search_type):
         search = f"%{query}%"
 
-        # Students
-        students = Student_Profile.query.filter(or_(
-                Student_Profile.fullname.ilike(search),
-                Student_Profile.qualification.ilike(search))).all()
+        student_results = []
+        company_results = []
 
-        #Companies
-        companies = Company_Profile.query.filter(
-            Company_Profile.company_name.ilike(search)
-        ).all()
+        if search_type == "student":
+            # Students
+            students = Student_Profile.query.filter(or_(
+                    Student_Profile.fullname.ilike(search),
+                    Student_Profile.qualification.ilike(search))).all()
+            
 
-        # Format Response
-        results = []
+            for s in students:
+                student_results.append({
+                    "type": "student",
+                    "id": s.id,
+                    "name": s.fullname,
+                    "qualification": s.qualification,
+                    "gender": s.gender,
+                    "department": s.department,
+                    "college_name": s.college_name,
+                    "experience": s.experience,
+                    "contact_no": s.contact_no,
+                    "skill": s.skill,})
+                
+        elif search_type == "company":
 
-        for s in students:
-            results.append({
-                "type": "student",
-                "id": s.id,
-                "name": s.fullname,
-                "qualification": s.qualification})
+            companies = Company_Profile.query.filter(
+                Company_Profile.company_name.ilike(search)
+            ).all()
 
-        for c in companies:
-            results.append({
-                "type": "company",
-                "id": c.id,
-                "company_name": c.company_name,
-                "company_field": c.company_field})
-
-        return results
+            for c in companies:
+                company_results.append({
+                    "type": "company",
+                    "id": c.id,
+                    "company_name": c.company_name,
+                    "Hr_contact": c.Hr_contact,
+                    "description": c.description,
+                    "company_type": c.company_type,
+                    "website": c.website,
+                    "company_field": c.company_field})
+                
+        return {"students": student_results,
+                "companies": company_results}
 
 
 

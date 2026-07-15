@@ -64,20 +64,23 @@
                     <div class="row mb-2">
                         <div class="col">
                             <label for="hr_contact" class="form-label">HR Contact</label>
-                            <input type="number" class="form-control" id="hr_contact" v-model="Hr_contact"
-                                placeholder="Enter HR mobile no. " style="height: 2.5rem;" required>
+                            <input type="tel" class="form-control" id="hr_contact" v-model="Hr_contact"
+                                placeholder="Enter HR mobile no. " style="height: 2.5rem;" pattern="[0-9]{10}" required>
                         </div>
                         <div class="col">
                             <label for="website" class="form-label">Website</label>
-                            <input type="text" class="form-control" id="website" v-model="Website"
+                            <input type="url" class="form-control" id="website" v-model="Website"
                                 placeholder="Enter company website link" style="height: 2.5rem;">
                         </div>
                     </div>
 
 
-
+                    <div v-if="error" class="alert alert-danger mt-2">
+                        {{ error }}
+                    </div>
                     <div class="d-flex justify-content-center" style="margin-top: 35px; height: 2.5rem;">
-                        <button type="submit" class="btn btn-outline-primary">Register</button>
+                        <button type="submit" class="btn btn-outline-primary" :disabled="loading"> {{ loading ? "Registering..." : "Register" }}</button>
+
                     </div>
                 </form>
 
@@ -114,34 +117,32 @@ export default {
     },
 
     created() {
-        this.useUserStore = useUserStore();
+        this.useStore = useUserStore();
     },
     methods: {
         async registerCompany() {
             this.error = "",
                 this.loading = true;
             try {
-                const payload = {
-                    email: this.Email,
-                    password: this.Password,
-                    role: this.role,
-                    company_name: this.Company_name,
-                    description: this.Desc,
-                    company_type: this.C_type,
-                    company_field: this.Field,
-                    hr_contact: this.Hr_contact,
-                    website: this.Website
-                };
-                const res = await api.post("/auth/register", payload);
+                const formData = new FormData();
+
+                formData.append("email", this.Email);
+                formData.append("password", this.Password);
+                formData.append("role", this.role);
+                formData.append("company_name", this.Company_name);
+                formData.append("description", this.Desc);
+                formData.append("company_type", this.C_type);
+                formData.append("company_field", this.Field);
+                formData.append("hr_contact", this.Hr_contact);
+                formData.append("website", this.Website);
+
+                await api.post("/auth/register", formData);
 
                 alert("Company Registration successful! Wait for Admin approval");
                 this.$router.push("/")
 
             } catch (err) {
-                this.error =
-                    err?.response?.data?.message ||
-                    err.message ||
-                    "Signup failed";
+                this.error = err.message;
             } finally {
                 this.loading = false;
 
