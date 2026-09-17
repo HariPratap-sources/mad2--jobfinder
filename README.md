@@ -1,4 +1,5 @@
 ## jobfinder-mad2
+JobFinder – Placement Portal Application is a full-stack web application designed to streamline campus recruitment by connecting students, companies, and administrators on a single platform. Built with Flask, Vue.js, SQLite, REST APIs, Redis, and Celery, it provides role-based authentication, placement-drive management, job applications, resume handling, application tracking, CSV exports, and automated background tasks such as reminders and reports.
 # How to run project
 ### Create virtual environment
 ```terminal
